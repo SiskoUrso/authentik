@@ -7678,6 +7678,228 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /interfaces/:
+    get:
+      operationId: interfaces_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - interfaces
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInterfaceList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: interfaces_create
+      tags:
+      - interfaces
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterfaceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interface'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /interfaces/{interface_uuid}/:
+    get:
+      operationId: interfaces_retrieve
+      parameters:
+      - in: path
+        name: interface_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this interface.
+        required: true
+      tags:
+      - interfaces
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interface'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: interfaces_update
+      parameters:
+      - in: path
+        name: interface_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this interface.
+        required: true
+      tags:
+      - interfaces
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterfaceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interface'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: interfaces_partial_update
+      parameters:
+      - in: path
+        name: interface_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this interface.
+        required: true
+      tags:
+      - interfaces
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInterfaceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interface'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: interfaces_destroy
+      parameters:
+      - in: path
+        name: interface_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this interface.
+        required: true
+      tags:
+      - interfaces
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /managed/blueprints/:
     get:
       operationId: managed_blueprints_list
@@ -24987,6 +25209,7 @@ components:
       - authentik.admin
       - authentik.api
       - authentik.crypto
+      - authentik.interfaces
       - authentik.events
       - authentik.flows
       - authentik.lib
@@ -28455,6 +28678,52 @@ components:
       - recovery
       - app_password
       type: string
+    Interface:
+      type: object
+      properties:
+        interface_uuid:
+          type: string
+          format: uuid
+        url_name:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        type:
+          $ref: '#/components/schemas/InterfaceTypeEnum'
+        template:
+          type: string
+      required:
+      - interface_uuid
+      - template
+      - type
+      - url_name
+    InterfaceRequest:
+      type: object
+      properties:
+        interface_uuid:
+          type: string
+          format: uuid
+        url_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        type:
+          $ref: '#/components/schemas/InterfaceTypeEnum'
+        template:
+          type: string
+          minLength: 1
+      required:
+      - interface_uuid
+      - template
+      - type
+      - url_name
+    InterfaceTypeEnum:
+      enum:
+      - user
+      - admin
+      - flow
+      type: string
     InvalidResponseActionEnum:
       enum:
       - retry
@@ -31052,6 +31321,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IdentificationStage'
+      required:
+      - pagination
+      - results
+    PaginatedInterfaceList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Interface'
       required:
       - pagination
       - results
@@ -33851,6 +34155,22 @@ components:
           description: Specify which sources should be shown.
         show_source_labels:
           type: boolean
+    PatchedInterfaceRequest:
+      type: object
+      properties:
+        interface_uuid:
+          type: string
+          format: uuid
+        url_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        type:
+          $ref: '#/components/schemas/InterfaceTypeEnum'
+        template:
+          type: string
+          minLength: 1
     PatchedInvitationRequest:
       type: object
       description: Invitation Serializer
