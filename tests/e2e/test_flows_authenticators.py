@@ -36,7 +36,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
 
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
 
-        self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
+        self.driver.get(self.url("authentik_interfaces:if", if_name="flow", flow_slug=flow.slug))
         self.login()
 
         # Get expected token
@@ -60,7 +60,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         """test TOTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
 
-        self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
+        self.driver.get(self.url("authentik_interfaces:if", if_name="flow", flow_slug=flow.slug))
         self.login()
 
         self.wait_for_url(self.if_user_url("/library"))
@@ -106,7 +106,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         """test Static OTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
 
-        self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
+        self.driver.get(self.url("authentik_interfaces:if", if_name="flow", flow_slug=flow.slug))
         self.login()
 
         self.wait_for_url(self.if_user_url("/library"))
