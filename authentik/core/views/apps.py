@@ -15,7 +15,8 @@ from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.utils.urls import redirect_with_qs
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import redirect_to_default_interface
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
@@ -52,7 +53,7 @@ class RedirectToAppLaunch(View):
         )
         plan.insert_stage(in_memory_stage(RedirectToAppStage))
         request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
+        return redirect_to_default_interface(request, InterfaceType.FLOW, flow_slug=flow.slug)
 
 
 class RedirectToAppStage(ChallengeStageView):
