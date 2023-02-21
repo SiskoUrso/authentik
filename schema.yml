@@ -3676,6 +3676,24 @@ paths:
         description: flow_user_settings
         schema:
           type: string
+      - name: interface_admin
+        required: false
+        in: query
+        description: interface_admin
+        schema:
+          type: string
+      - name: interface_flow
+        required: false
+        in: query
+        description: interface_flow
+        schema:
+          type: string
+      - name: interface_user
+        required: false
+        in: query
+        description: interface_user
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -7681,6 +7699,7 @@ paths:
   /interfaces/:
     get:
       operationId: interfaces_list
+      description: Interface serializer
       parameters:
       - name: ordering
         required: false
@@ -7704,6 +7723,22 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: template
+        schema:
+          type: string
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - admin
+          - flow
+          - user
+      - in: query
+        name: url_name
         schema:
           type: string
       tags:
@@ -7731,6 +7766,7 @@ paths:
           description: ''
     post:
       operationId: interfaces_create
+      description: Interface serializer
       tags:
       - interfaces
       requestBody:
@@ -7763,6 +7799,7 @@ paths:
   /interfaces/{interface_uuid}/:
     get:
       operationId: interfaces_retrieve
+      description: Interface serializer
       parameters:
       - in: path
         name: interface_uuid
@@ -7796,6 +7833,7 @@ paths:
           description: ''
     put:
       operationId: interfaces_update
+      description: Interface serializer
       parameters:
       - in: path
         name: interface_uuid
@@ -7835,6 +7873,7 @@ paths:
           description: ''
     patch:
       operationId: interfaces_partial_update
+      description: Interface serializer
       parameters:
       - in: path
         name: interface_uuid
@@ -7873,6 +7912,7 @@ paths:
           description: ''
     delete:
       operationId: interfaces_destroy
+      description: Interface serializer
       parameters:
       - in: path
         name: interface_uuid
@@ -7888,6 +7928,43 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /interfaces/{interface_uuid}/used_by/:
+    get:
+      operationId: interfaces_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: interface_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this interface.
+        required: true
+      tags:
+      - interfaces
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           content:
             application/json:
@@ -28680,10 +28757,12 @@ components:
       type: string
     Interface:
       type: object
+      description: Interface serializer
       properties:
         interface_uuid:
           type: string
           format: uuid
+          readOnly: true
         url_name:
           type: string
           maxLength: 50
@@ -28699,10 +28778,8 @@ components:
       - url_name
     InterfaceRequest:
       type: object
+      description: Interface serializer
       properties:
-        interface_uuid:
-          type: string
-          format: uuid
         url_name:
           type: string
           minLength: 1
@@ -28714,7 +28791,6 @@ components:
           type: string
           minLength: 1
       required:
-      - interface_uuid
       - template
       - type
       - url_name
@@ -34157,10 +34233,8 @@ components:
           type: boolean
     PatchedInterfaceRequest:
       type: object
+      description: Interface serializer
       properties:
-        interface_uuid:
-          type: string
-          format: uuid
         url_name:
           type: string
           minLength: 1
@@ -35281,6 +35355,18 @@ components:
           format: uuid
           nullable: true
         flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
+        interface_admin:
+          type: string
+          format: uuid
+          nullable: true
+        interface_user:
+          type: string
+          format: uuid
+          nullable: true
+        interface_flow:
           type: string
           format: uuid
           nullable: true
@@ -37859,6 +37945,18 @@ components:
           type: string
           format: uuid
           nullable: true
+        interface_admin:
+          type: string
+          format: uuid
+          nullable: true
+        interface_user:
+          type: string
+          format: uuid
+          nullable: true
+        interface_flow:
+          type: string
+          format: uuid
+          nullable: true
         event_retention:
           type: string
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
@@ -37914,6 +38012,18 @@ components:
           format: uuid
           nullable: true
         flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
+        interface_admin:
+          type: string
+          format: uuid
+          nullable: true
+        interface_user:
+          type: string
+          format: uuid
+          nullable: true
+        interface_flow:
           type: string
           format: uuid
           nullable: true
