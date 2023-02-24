@@ -7,6 +7,7 @@ from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.urls import reverse
 from django.utils.http import urlencode
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Token
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
@@ -75,6 +76,7 @@ class TestEmailStage(FlowTestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    @apply_blueprint("system/interfaces.yaml")
     @patch(
         "authentik.stages.email.models.EmailStage.backend_class",
         PropertyMock(return_value=EmailBackend),
@@ -124,6 +126,7 @@ class TestEmailStage(FlowTestCase):
         with self.settings(EMAIL_HOST=host):
             self.assertEqual(EmailStage(use_global_settings=True).backend.host, host)
 
+    @apply_blueprint("system/interfaces.yaml")
     def test_token(self):
         """Test with token"""
         # Make sure token exists
