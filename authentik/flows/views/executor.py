@@ -60,6 +60,7 @@ from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
 from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_tenant
 
 LOGGER = get_logger()
 # Argument used to redirect user after login
@@ -478,7 +479,7 @@ class ToDefaultFlow(View):
         return None
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        tenant: Tenant = request.tenant
+        tenant = get_tenant(request)
         flow = None
         # First, attempt to get default flow from tenant
         if self.designation == FlowDesignation.AUTHENTICATION:

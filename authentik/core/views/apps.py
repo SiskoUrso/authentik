@@ -22,6 +22,7 @@ from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
 )
 from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_tenant
 
 
 class RedirectToAppLaunch(View):
@@ -38,7 +39,7 @@ class RedirectToAppLaunch(View):
             return HttpResponseRedirect(app.get_launch_url(request.user))
         # otherwise, do a custom flow plan that includes the application that's
         # being accessed, to improve usability
-        tenant: Tenant = request.tenant
+        tenant = get_tenant(request)
         flow = tenant.flow_authentication
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
