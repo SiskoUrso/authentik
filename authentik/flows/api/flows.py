@@ -296,10 +296,10 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         return Response(
             {
                 "link": request._request.build_absolute_uri(
-            reverse_interface(
-            InterfaceType.FLOW,
-            flow_slug=flow.slug,
-        ),
+                    reverse_interface(
+                        InterfaceType.FLOW,
+                        flow_slug=flow.slug,
+                    ),
                 )
             }
         )

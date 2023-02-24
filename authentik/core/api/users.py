@@ -348,7 +348,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 InterfaceType.FLOW,
                 flow_slug=flow.slug,
             ),
-            + f"?{querystring}"
+            +f"?{querystring}",
         )
         return link, token
 
